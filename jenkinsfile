@@ -18,15 +18,6 @@ pipeline {
                         sh 'sudo sh get-docker.sh'
                     }
 
-                    // Verifica se o Docker Compose está instalado, se não, instala
-                    def dockerComposeInstalled = sh(script: 'command -v docker-compose', returnStatus: true) == 0
-
-                    if (!dockerComposeInstalled) {
-                        echo "Docker Compose não instalado. Instalando agora..."
-                        sh "curl -L https://github.com/docker/compose/releases/download/${env.DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose"
-                        sh 'chmod +x /usr/local/bin/docker-compose'
-                    }
-
                     // Exibe as versões
                     sh 'docker info'
                     sh 'docker version'
