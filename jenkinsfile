@@ -1,0 +1,42 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_COMPOSE_VERSION = '1.24.0'
+    }
+
+    stages {
+        stage("Verify tooling") {
+            steps {
+                script {
+                    // Verifica se o Docker está instalado, se não, instala
+                    def dockerInstalled = sh(script: 'command -v docker', returnStatus: true) == 0
+
+                    if (!dockerInstalled) {
+                        echo "Docker não instalado. Instalando agora..."
+                        sh 'curl -fsSL https://get.docker.com -o get-docker.sh'
+                        sh 'sudo sh get-docker.sh'
+                    }
+
+                    // Verifica se o Docker Compose está instalado, se não, instala
+                    def dockerComposeInstalled = sh(script: 'command -v docker-compose', returnStatus: true) == 0
+
+                    if (!dockerComposeInstalled) {
+                        echo "Docker Compose não instalado. Instalando agora..."
+                        sh "curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose"
+                        sh 'chmod +x /usr/local/bin/docker-compose'
+                    }
+
+                    // Exibe as versões
+                    sh 'docker info'
+                    sh 'docker version'
+                    sh 'docker-compose version'
+                    sh 'curl --version'
+                    sh 'jq --version'
+                }
+            }
+        }
+
+        // Adicione mais estágios conforme necessário
+    }
+}
