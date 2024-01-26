@@ -11,11 +11,11 @@ pipeline {
                 script {
                     // Verifica se o Docker está instalado, se não, instala
                     def dockerInstalled = sh(script: 'command -v docker', returnStatus: true) == 0
-
+                    
                     if (!dockerInstalled) {
                         echo "Docker não instalado. Instalando agora..."
                         sh 'curl -fsSL https://get.docker.com -o get-docker.sh'
-                        sh 'sudo sh get-docker.sh'
+                        sh 'sh get-docker.sh'
                     }
 
                     // Exibe as versões
